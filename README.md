@@ -17,10 +17,14 @@ ProjectZen is a full-stack project management application built with the MERN st
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React.js, Axios, Bootstrap/CSS
+- **Frontend**: React.js, Axios, Bootstrap, CSS
 - **Backend**: Node.js, Express.js
-- **Database**: MongoDB (via Mongoose)
-- **Authentication**: J
+- **Database**: MongoDB with Mongoose ORM
+- **Authentication**: JWT-based login system
+- **State Management**: Redux
+- **UI**: React Bootstrap
+
+
 
 ---
 
