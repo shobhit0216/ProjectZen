@@ -10,10 +10,10 @@ import { Button, Container, Form, Alert } from 'react-bootstrap';
 import { UpdateCall, CreateCall, DeleteCall } from '../helpers/apiCalls';
 import style from '../style/StackForm.module.css';
 
-class StackForm extends React.Component{
+class StackForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state= {
+    this.state = {
       name: '',
       description: '',
       link: '',
@@ -25,38 +25,38 @@ class StackForm extends React.Component{
   }
 
   componentDidMount() {
-    const { location} = this.props;
+    const { location } = this.props;
     const { type } = location.state;
     if (type === 'update') {
       const { stack } = location.state;
-      this.setState(stack)
+      this.setState(stack);
     }
   }
 
   handleChange = (event) => {
-    this.setState({[event.target.name]: event.target.value})
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   onFileChange = (e) => {
-    this.setState({ logo: e.target.files[0] })
+    this.setState({ logo: e.target.files[0] });
   }
 
-  async handleSubmit (event) {
+  async handleSubmit(event) {
     event.preventDefault();
     const { location, createStack, updateStack } = this.props;
     const { type } = location.state;
     const token = this.getCookie('csrftoken');
     try {
-      if(type === 'create') {
+      if (type === 'create') {
         const formData = new FormData();
-        formData.append('logo', this.state.logo)
-        formData.append('name', this.state.name)
-        formData.append('description', this.state.description)
-        formData.append('released_year', this.state.released_year)
-        formData.append('link', this.state.link)
+        formData.append('logo', this.state.logo);
+        formData.append('name', this.state.name);
+        formData.append('description', this.state.description);
+        formData.append('released_year', this.state.released_year);
+        formData.append('link', this.state.link);
         const data = await createStack('stacks', token, formData);
         this.props.history.push({
-          pathname:`/stack/${data.stack.name}`,
+          pathname: `/stack/${data.stack.name}`,
           state: {
             id: data.stack._id,
           },
@@ -64,55 +64,61 @@ class StackForm extends React.Component{
       } else if (type === 'update') {
         const { stack } = location.state;
         const formData = new FormData();
-        formData.append('logo', this.state.logo)
-        formData.append('name', this.state.name)
-        formData.append('description', this.state.description)
-        formData.append('released_year', this.state.released_year)
-        formData.append('link', this.state.link)
+        formData.append('logo', this.state.logo);
+        formData.append('name', this.state.name);
+        formData.append('description', this.state.description);
+        formData.append('released_year', this.state.released_year);
+        formData.append('link', this.state.link);
         const data = await updateStack('stacks', token, formData, stack._id);
-        this.setState({})
+        this.setState({});
         this.props.history.push({
-          pathname:`/stack/${data.stack.name}`,
+          pathname: `/stack/${data.stack.name}`,
           state: {
             id: data.stack._id,
           },
         });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }  
+  }
 
-  async handleDelete (e) {
+  async handleDelete(e) {
+    e.preventDefault(); // Prevent default form submission
     const { location, deleteStack } = this.props;
     const { stack } = location.state;
     const token = this.getCookie('csrftoken');
+
     try {
-      await deleteStack('stacks', token, stack._id)
+      // Ensure the deleteStack call is awaited properly
+      await deleteStack('stacks', token, stack._id);
+
+      // After successful deletion, navigate to the stacks page
       this.props.history.push('/stacks');
-    } catch(error) {
-      console.log(error)
+    } catch (error) {
+      // Catch any error that occurs during the delete process
+      console.log(error);
     }
   }
 
   getCookie = (name) => {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (`${name  }=`)) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (`${name}=`)) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
+      }
     }
     return cookieValue;
   }
 
   render() {
-    const { location} = this.props;
+    const { location } = this.props;
     const { type } = location.state;
     return (
       <Container className={style.container2}>
@@ -124,30 +130,30 @@ class StackForm extends React.Component{
         <Form onSubmit={this.handleSubmit} className={style.formal}>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Stack Name</Form.Label>
-            <Form.Control 
-              type="text" 
-              placeholder="Enter stack name" 
+            <Form.Control
+              type="text"
+              placeholder="Enter stack name"
               value={this.state.name}
               name="name"
-              onChange={this.handleChange} 
+              onChange={this.handleChange}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Stack Description</Form.Label>
-            <Form.Control 
-              as="textarea" 
+            <Form.Control
+              as="textarea"
               rows={5}
               value={this.state.description}
               name="description"
-              onChange={this.handleChange} 
+              onChange={this.handleChange}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Stack Released Year (1950-2100)</Form.Label>
-            <Form.Control 
-              type="number" 
-              min="1950" 
-              max="2100" 
+            <Form.Control
+              type="number"
+              min="1950"
+              max="2100"
               value={this.state.released_year}
               name="released_year"
               onChange={this.handleChange}
@@ -155,12 +161,12 @@ class StackForm extends React.Component{
           </Form.Group>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Link to official website</Form.Label>
-            <Form.Control 
-              type="text" 
+            <Form.Control
+              type="text"
               placeholder="Enter stack link"
               value={this.state.link}
               name="link"
-              onChange={this.handleChange}             
+              onChange={this.handleChange}
             />
           </Form.Group>
           <div className="form-group">
@@ -172,30 +178,27 @@ class StackForm extends React.Component{
           {type === 'update' ? (
             <Button
               variant="primary"
-              type="submit"
               className={`${style.btn2} mr-3`}
-              onClick={e =>
-                window.confirm("Are you sure you want to delete this stack?") &&
-                this.handleDelete()
-            }
+              onClick={(e) =>
+                window.confirm("Are you sure you want to delete this stack?") && this.handleDelete(e)
+              }
             >
               Delete
             </Button>
-            )
-            : (<></>)}
+          ) : (<></>)}
         </Form>
       </Container>
     );
-  };
-};
+  }
+}
 
 StackForm.propTypes = {
   location: PropTypes.shape({
-    state: PropTypes.shape({ 
-      stack: PropTypes.object.isRequired, 
-      type: PropTypes.string.isRequired 
+    state: PropTypes.shape({
+      stack: PropTypes.object.isRequired,
+      type: PropTypes.string.isRequired
     }),
-  }).isRequired,  
+  }).isRequired,
   createStack: PropTypes.func.isRequired,
   updateStack: PropTypes.func.isRequired,
   deleteStack: PropTypes.func.isRequired,
